@@ -47,12 +47,36 @@
 }
 
 .options {
+  position: absolute;
   padding: 0;
   margin: 0;
   list-style: none;
-  /* display: none; */
+  display: none;
+  max-height: 15em;
+  overflow-y: auto;
+  border: 1px solid #777;
+  border-radius: 0.25em;
+  width: 100%;
+  left: 0;
+  top: calc(100% + 0.25em);
+  background-color: white;
+  z-index: 100;
 }
 
 .options.show {
   display: block;
+}
+
+.option {
+  padding: 0.25em 0.5em;
+  cursor: pointer;
+}
+
+.option.highlighted {
+  background-color: hsl(200, 100%, 50%);
+  color: white;
+}
+
+.option.selected {
+  background-color: hsl(200, 100%, 70%);
 }
