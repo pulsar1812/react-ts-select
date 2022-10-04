@@ -20,6 +20,10 @@ export function Select({ selectOption, onChange, options }: SelectProps) {
     onChange(undefined)
   }
 
+  function handleSelect(option: SelectOption) {
+    onChange(option)
+  }
+
   return (
     <div
       tabIndex={0}
@@ -41,7 +45,15 @@ export function Select({ selectOption, onChange, options }: SelectProps) {
       <div className={styles.caret}></div>
       <ul className={`${styles.options} ${isOpen ? styles.show : ''}`}>
         {options.map((option) => (
-          <li key={option.label} className={styles.option}>
+          <li
+            key={option.label}
+            onClick={(e) => {
+              e.stopPropagation()
+              handleSelect(option)
+              setIsOpen(false)
+            }}
+            className={styles.option}
+          >
             {option.label}
           </li>
         ))}
