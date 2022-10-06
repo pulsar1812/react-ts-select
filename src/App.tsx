@@ -11,16 +11,24 @@ const options: SelectOption[] = [
 ]
 
 function App() {
-  const [selectOption, setSelectOption] = useState<SelectOption | undefined>(
-    options[0]
-  )
+  const [multipleSelected, setMultipleSelected] = useState<SelectOption[]>([
+    options[0],
+  ])
+  const [selected, setSelected] = useState<SelectOption | undefined>(options[0])
 
   return (
     <>
       <Select
+        multiple
         options={options}
-        selectOption={selectOption}
-        onChange={(o) => setSelectOption(o)}
+        selected={multipleSelected}
+        onChange={(o) => setMultipleSelected(o)}
+      />
+      <br />
+      <Select
+        options={options}
+        selected={selected}
+        onChange={(o) => setSelected(o)}
       />
     </>
   )

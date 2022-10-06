@@ -2,31 +2,49 @@ import { useEffect, useState } from 'react'
 
 import styles from './select.module.css'
 
-export interface SelectOption {
+export type SelectOption = {
   label: string
   value: string | number
 }
 
-interface SelectProps {
-  options: SelectOption[]
-  selectOption?: SelectOption
+type MultipleSelectProps = {
+  multiple: true
+  selected: SelectOption[]
+  onChange: (value: SelectOption[]) => void
+}
+
+type SingleSelectProps = {
+  multiple?: false
+  selected?: SelectOption
   onChange: (value: SelectOption | undefined) => void
 }
 
-export function Select({ selectOption, onChange, options }: SelectProps) {
+type SelectProps = {
+  options: SelectOption[]
+} & (SingleSelectProps | MultipleSelectProps)
+
+export function Select({ multiple, selected, onChange, options }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(0)
 
   function clearOptions() {
-    onChange(undefined)
+    multiple ? onChange([]) : onChange(undefined)
   }
 
   function handleSelect(option: SelectOption) {
-    if (option !== selectOption) onChange(option)
+    if (multiple) {
+      if (selected.includes(option)) {
+        onChange(selected.filter((o) => o !== option))
+      } else {
+        onChange([...selected, option])
+      }
+    } else {
+      if (option !== selected) onChange(option)
+    }
   }
 
   function isOptionSelected(option: SelectOption) {
-    return option === selectOption
+    return multiple ? selected.includes(option) : option === selected
   }
 
   useEffect(() => {
@@ -40,7 +58,23 @@ export function Select({ selectOption, onChange, options }: SelectProps) {
       onBlur={() => setIsOpen(false)}
       className={styles.container}
     >
-      <span className={styles.value}>{selectOption?.label}</span>
+      <span className={styles.value}>
+        {multiple
+          ? selected.map((sel) => (
+              <button
+                key={sel.value}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleSelect(sel)
+                }}
+                className={styles['option-badge']}
+              >
+                {sel.label}
+                <span className={styles['remove-btn']}>&times;</span>
+              </button>
+            ))
+          : selected?.label}
+      </span>
       <button
         onClick={(e) => {
           e.stopPropagation()
